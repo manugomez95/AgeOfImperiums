@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "Soldier.h"
 using namespace std;
 
@@ -9,12 +10,11 @@ class Player {
     static int counter;
 public:
     int id;
-    Soldier* army;
+    vector<Soldier> army;
     int armySize;
     int color;
 
     Player(int);
-    void destroy();
     string str();
 };
 

@@ -12,4 +12,5 @@ public:
     int velocity;
 
     string str();
+    Soldier(int);
 };

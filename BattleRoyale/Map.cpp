@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "BattleRoyale.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ void Map::print() {
                 else {
                     Soldier* s = matrix[(i - 1) / 2][(j - 1) / 2];
                     if (s != NULL) {
-                        SetConsoleTextAttribute(hConsole, 10); // BattleRoyale::getInstance()->players[s->playerId]->color
+                        SetConsoleTextAttribute(hConsole, BattleRoyale::getInstance()->players[s->playerId].color);
                         cout << " " << s->str() << " ";
                         SetConsoleTextAttribute(hConsole, LOG_COLOR_WHITE);
                     }
