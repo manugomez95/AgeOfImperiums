@@ -13,7 +13,3 @@ public:
 
     string str();
 };
-
-string Soldier::str() {
-    return string(1, char(2));
-}
