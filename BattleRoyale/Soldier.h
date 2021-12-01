@@ -3,8 +3,11 @@
 #include <string>
 using namespace std;
 
+class Transform;
+
 class Soldier {
 public:
+    Transform* transform;
     int playerId;
     int health;
     int attack;
@@ -12,5 +15,5 @@ public:
     int velocity;
 
     string str();
-    Soldier(int);
+    Soldier(int, Transform*);
 };

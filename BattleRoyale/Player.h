@@ -17,5 +17,3 @@ public:
     Player(int);
     string str();
 };
-
-//enum class Color { Green = 10, Yellow = 14, Magenta = 13 }; TODO REVIEW

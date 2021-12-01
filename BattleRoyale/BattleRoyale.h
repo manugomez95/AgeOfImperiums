@@ -8,15 +8,17 @@
 using namespace std;
 
 class BattleRoyale {
-    BattleRoyale(int n);
+    Map* map;
     static BattleRoyale* instance;
 public:
     int nPlayers;
     vector<Player> players;
-    Map* map;
 
-    static BattleRoyale* create(int n); // support multiple players
+    static BattleRoyale* create();
     static BattleRoyale* getInstance();
+    void setMap(Map* map);
+    Map* getMap();
+    void initPlayers(int);
     void destroy();
-    //void start();
+    void update();
 };
