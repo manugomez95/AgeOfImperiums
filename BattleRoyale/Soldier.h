@@ -1,19 +1,25 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include "GameObject.h"
 using namespace std;
 
-class Transform;
+class Map;
+class Player;
 
-class Soldier {
+class Soldier : public GameObject {
+private:
+    //vector<Soldier*> getEnemiesAround();
+
 public:
-    Transform* transform;
-    int playerId;
+    Soldier(Player* player, Map* map, array<int, 2> pos);
+
+    Player* player;
     int health;
     int attack;
     int defense;
     int velocity;
 
-    string str();
-    Soldier(int, Transform*);
+    void action();
 };

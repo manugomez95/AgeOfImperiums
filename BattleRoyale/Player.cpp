@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "BattleRoyale.h"
-#include "Transform.h"
 #include "Utils.h"
+
 using namespace std;
 
 int Player::counter = 0;
@@ -31,8 +31,8 @@ Player::Player(int size) {
 
     // For each soldier
     for (int i = 0; i < armySize; i++) {
-        int pos[2] = { Utils::randomRange(1,20), Utils::randomRange(1,20) };
-        Soldier* s = new Soldier(id, new Transform(map, pos));
+        array<int,2> pos = { Utils::randomRange(1,20), Utils::randomRange(1,20) };
+        Soldier* s = new Soldier(this, map, pos);
         map->matrix[pos[0]][pos[1]] = s; // TODO take into account collisions
         army.push_back(*s);
     }

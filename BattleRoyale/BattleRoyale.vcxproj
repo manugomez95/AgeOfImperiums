@@ -140,11 +140,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BattleRoyale.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Soldier.h" />
-    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -152,7 +152,7 @@
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="BattleRoyale.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

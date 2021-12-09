@@ -1,12 +1,27 @@
 #include "Soldier.h"
+#include "Utils.h"
+#include "GameObject.h"
+#include "Map.h"
+#include "Player.h"
 using namespace std;
 
-string Soldier::str() {
-    return string(1, char(2));
+Soldier::Soldier(Player* player, Map* map, array<int,2> pos) : GameObject(map, pos) {
+    this->player = player;
+    velocity = 1;
+    icon = char(2);
+    color = player->color;
 }
 
-Soldier::Soldier(int id, Transform* t) {
-    playerId = id;
-    velocity = 1;
-    transform = t;
+void Soldier::action() {
+    // Move randomly
+    move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
+
+    // Attack if enemy near
+    //vector<Soldier*> enemies = getEnemiesAround();
 }
+
+/*vector<Soldier*> Soldier::getEnemiesAround() {
+    for (auto d : Transform::DIRECTIONS) {
+        transform->map->matrix[transform->pos[0] + d[0]];
+    }
+}*/

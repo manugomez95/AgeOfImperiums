@@ -1,6 +1,5 @@
 #include "BattleRoyale.h"
-#include "Transform.h"
-#include "Utils.h"
+
 using namespace std;
 
 // TODO make some variables private
@@ -35,16 +34,13 @@ void BattleRoyale::initPlayers(int n) {
 }
 
 void BattleRoyale::update() {
-    int directions[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
-
     for (auto& pl : players) {
-        for (Soldier s : pl.army) {
-            int* dir = directions[Utils::randomRange(0, 3)];
-            s.transform->move(dir[0], dir[1]);
+        for (Soldier& s : pl.army) {
+            s.action();
         }
     }
 
-    map->print();
+    map->print(true);
 }
 
 void BattleRoyale::destroy() {

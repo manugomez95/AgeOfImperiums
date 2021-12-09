@@ -2,19 +2,20 @@
 
 #include <iostream>
 #include <string>
-#include <windows.h> // WinApi header
-#include "Soldier.h"
-
-#define LOG_COLOR_WHITE 7
+#include <array>
 
 using namespace std;
+
+class GameObject;
 
 class Map {
 public:
     int rows, cols;
-    Soldier*** matrix;
+    GameObject*** matrix;
 
     Map(int, int);
+
+    array<int, 2> translatePosition(array<int, 2>);
     void destroy();
-    void print();
+    void print(bool grid);
 };

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Soldier.h"
+
 using namespace std;
 
 class Player {
