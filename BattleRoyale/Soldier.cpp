@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Map.h"
 #include "Player.h"
+#include "Consumable.h"
 using namespace std;
 
 Soldier::Soldier(Player* player, Map* map, array<int,2> pos) : GameObject(map, pos) {
@@ -15,6 +16,7 @@ Soldier::Soldier(Player* player, Map* map, array<int,2> pos) : GameObject(map, p
     health = 50;
     damage = 10;
     dodgeChance = 0.3f;
+    sightRange = 3;
 }
 
 // allows unit to continue on the other side of the map when it reaches the limit
@@ -25,28 +27,38 @@ void Soldier::move(array<int, 2> dir) {
     new_pos = map->translatePosition(
         array<int, 2> {pos[0] + dir[0], pos[1] + dir[1]});
 
-    Soldier* go = dynamic_cast<Soldier*> (map->matrix[new_pos[0]][new_pos[1]]);
+    GameObject* go = map->matrix[new_pos[0]][new_pos[1]];
 
-    // to avoid collisions
-    if (go != NULL && !go->dead) return;
-
-    else {
-        map->matrix[pos[0]][pos[1]] = NULL;
-        map->matrix[new_pos[0]][new_pos[1]] = tmp;
-
-        pos[0] = new_pos[0];
-        pos[1] = new_pos[1];
+    // If object in new position is consumable...
+    if (Consumable* c = dynamic_cast<Consumable*> (go)) {
+        c->consume(this);
     }
+    // If object in new position is a soldier...
+    else if (Soldier* s = dynamic_cast<Soldier*> (go)) {
+        // to avoid collisions
+        if (!isEnemy(s)) move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
+        return;
+    }
+    
+    // actual movement
+    map->matrix[pos[0]][pos[1]] = NULL;
+    map->matrix[new_pos[0]][new_pos[1]] = tmp;
+
+    pos[0] = new_pos[0];
+    pos[1] = new_pos[1];
 }
 
 void Soldier::move() {
-    Soldier* s = getNearestEnemy(); // TODO could be a random enemy also
+    GameObject* target = NULL; // = getNearestEnemy();
+    if (health < 30) target = getNearestPotion();
+    if (!target) target = getNearestEnemy();
+
     bool pickRandomly = false;
     int moveVertical = Utils::randomRange(0, 1);
-    if (!s) move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
+    if (!target) move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
     else {
-        int dir_x = s->pos[0] - pos[0];
-        int dir_y = s->pos[1] - pos[1];
+        int dir_x = target->pos[0] - pos[0];
+        int dir_y = target->pos[1] - pos[1];
         while (true) {
             if (dir_x == 0 || (pickRandomly && moveVertical)) {
                 move({ 0, (dir_y < 0) ? -1 : 1 });
@@ -63,7 +75,6 @@ void Soldier::move() {
     }
 }
 
-
 void Soldier::combat() {
     // Attack if enemy near
     vector<Soldier*> enemies = getEnemiesAround();
@@ -72,8 +83,7 @@ void Soldier::combat() {
     int randomIndex = Utils::randomRange(0, enemies.size() - 1);
     Soldier* luckyGuy = enemies[randomIndex];
     
-    if (player->debug) cout << this->str() << " attacks " << luckyGuy->str() 
-        << " (health: " << luckyGuy->health << ")" << endl;
+    if (player->debug) cout << this->str() << " attacks " << luckyGuy->str() << endl;
     
     luckyGuy->receiveAttack(damage);
 }
@@ -104,15 +114,14 @@ void Soldier::receiveAttack(int receivedDamage) {
 }
 
 string Soldier::str() {
-    return name + "[" + player->str() + "] ";
+    return player->str() + ":" + name + " (HP: " + to_string(health) + ")";
 }
 
 Soldier* Soldier::getNearestEnemy() {
-    int range = 3;
     int minDistance = 10000;
     Soldier* nearestEnemy = NULL;
-    for (int i = pos[0] - range; i <= pos[0] + range; i++) {
-        for (int j = pos[1] - range; j <= pos[1] + range; j++) {
+    for (int i = pos[0] - sightRange; i <= pos[0] + sightRange; i++) {
+        for (int j = pos[1] - sightRange; j <= pos[1] + sightRange; j++) {
             Soldier* s = dynamic_cast<Soldier*> (map->get({ i,j }));
             if (isEnemy(s)) {
                 int distance = abs(s->pos[0] - pos[0]) + abs(s->pos[1] - pos[1]);
@@ -125,6 +134,25 @@ Soldier* Soldier::getNearestEnemy() {
     }
 
     return nearestEnemy;
+}
+
+HealthPotion* Soldier::getNearestPotion() {
+    int minDistance = 10000;
+    HealthPotion* nearestPotion = NULL;
+    for (int i = pos[0] - sightRange; i <= pos[0] + sightRange; i++) {
+        for (int j = pos[1] - sightRange; j <= pos[1] + sightRange; j++) {
+            HealthPotion* p = dynamic_cast<HealthPotion*> (map->get({ i,j }));
+            if (p) {
+                int distance = abs(p->pos[0] - pos[0]) + abs(p->pos[1] - pos[1]);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestPotion = p;
+                }
+            }
+        }
+    }
+
+    return nearestPotion;
 }
 
 bool Soldier::isEnemy(Soldier* s) {

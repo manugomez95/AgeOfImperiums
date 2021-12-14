@@ -2,6 +2,7 @@
 
 #include "Utils.h"
 
+// TODO cambiar
 const string Utils::SILLY_NAMES[59] =
 {		"Aitor Tilla ",
 		"Zoyla Vaca ",

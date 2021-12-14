@@ -17,6 +17,7 @@ public:
 
     array<int, 2> translatePosition(array<int, 2>);
     GameObject* get(array<int, 2>);
+    bool add(GameObject* go);
     void destroy();
     void print(bool grid);
 };

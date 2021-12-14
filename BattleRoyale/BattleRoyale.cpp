@@ -12,11 +12,16 @@ using namespace this_thread;
 
 BattleRoyale* BattleRoyale::instance = NULL;
 
-BattleRoyale* BattleRoyale::create() {
+BattleRoyale::BattleRoyale(ViewMode viewMode) {
+    this->viewMode = viewMode;
+    refreshRate = this->viewMode == ViewMode::Cinematic ? 1000ms : 3000ms;
+}
+
+BattleRoyale* BattleRoyale::create(ViewMode viewMode) {
     if (instance != NULL) {
         return instance;
     }
-    instance = new BattleRoyale();
+    instance = new BattleRoyale(viewMode);
     return instance;
 }
 
@@ -32,6 +37,7 @@ Map* BattleRoyale::getMap() {
     return map;
 }
 
+// TODO deprecated? revisar
 void BattleRoyale::initPlayers(int n_players, int army_size) {
     for (int i = 0; i < n_players; i++) {
         Player* p = new Player(army_size);
@@ -39,12 +45,17 @@ void BattleRoyale::initPlayers(int n_players, int army_size) {
     }
 }
 
+void BattleRoyale::addPlayer(Player* player) {
+    player->debug = this->viewMode == ViewMode::Debug;
+    players.push_back(player);
+}
+
 void BattleRoyale::update() {
     for (auto& pl : players)
         for (Soldier*& s : pl->army)
             if (!s->dead) s->move();
 
-    map->print(true);
+    map->print(viewMode == ViewMode::Debug);
 
     for (auto& pl : players)
         for (Soldier*& s : pl->army)
@@ -61,8 +72,8 @@ void BattleRoyale::play() {
                 loser = pl;
 
         update();
-        sleep_for(3000ms); // 1000
-        //system("cls");
+        sleep_for(refreshRate);
+        if (viewMode == ViewMode::Cinematic) system("cls");
     }
 }
 

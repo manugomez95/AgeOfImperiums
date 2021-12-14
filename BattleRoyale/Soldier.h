@@ -7,11 +7,13 @@ using namespace std;
 
 class Map;
 class Player;
+class HealthPotion;
 
 class Soldier : public GameObject {
 private:
     vector<Soldier*> getEnemiesAround();
     Soldier* getNearestEnemy();
+    HealthPotion* getNearestPotion();
     bool isEnemy(Soldier* s);
     void receiveAttack(int receivedDamage);
 
@@ -24,6 +26,7 @@ public:
     int damage;
     float dodgeChance;
     int velocity;
+    int sightRange = 3;
     bool dead;
 
     void combat();

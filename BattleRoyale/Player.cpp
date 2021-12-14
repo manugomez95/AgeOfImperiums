@@ -5,7 +5,6 @@
 using namespace std;
 
 int Player::counter = 0;
-int const PLACEMENT_MAX_TRIES = 10;
 
 // TODO add deletes everywhere to clean memory
 // TODO use global counter to check how many players remaining in match
@@ -26,17 +25,9 @@ Player::Player(int armySize, bool debug) {
 
     // For each soldier
     for (int i = 0; i < armySize; i++) {
-        bool has_place = false;
-        for (int tries = 0; tries < PLACEMENT_MAX_TRIES && !has_place; tries++) {
-            array<int, 2> pos = { Utils::randomRange(0,map->rows - 1), Utils::randomRange(0,map->cols - 1) };
-            if (map->matrix[pos[0]][pos[1]] == NULL) {
-                has_place = true;
-                Soldier* s = new Soldier(this, map, pos);
-                map->matrix[pos[0]][pos[1]] = s;
-                army.push_back(s);
-            }
-        }
-        if (!has_place) throw runtime_error("Map is too crowded.");
+        Soldier* s = new Soldier(this, map, { -1,-1 });
+        if (!map->add(s)) throw runtime_error("Map is too crowded.");
+        army.push_back(s);
     }
 }
 

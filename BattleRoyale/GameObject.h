@@ -15,6 +15,7 @@ public:
 
 	GameObject(Map* map, array<int,2> pos);
 
+	string name;
 	Map* map;
 	array<int,2> pos;
 	int color;

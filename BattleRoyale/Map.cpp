@@ -3,8 +3,11 @@
 #include "GameObject.h"
 #include "Utils.h"
 #include <windows.h> // WinApi header
+#include "Consumable.h"
 
 using namespace std;
+
+int const PLACEMENT_MAX_TRIES = 10;
 
 // In this map when a unit reaches the limit, it continues on the contrary side
 Map::Map(int m, int n) {
@@ -17,6 +20,9 @@ Map::Map(int m, int n) {
             matrix[i][j] = NULL;
         }
     }
+
+    // add potion randomly
+    this->add(new HealthPotion(this, {-1,-1}));
 }
 
 void Map::destroy() {
@@ -38,11 +44,12 @@ void Map::print(bool grid) {
             {
                 if (j % 2 == 0)
                     cout << " ";
-                else if (grid) cout << "---";
+                else if (grid || i == 0 || i == 2 * rows) cout << "---";
             }
             else {
-                if (j % 2 == 0 && grid)
-                    cout << "|";
+                if (j % 2 == 0)
+                    if (grid || j == 0 || j == 2 * cols) cout << "|";
+                    else cout << " ";
                 else {
                     GameObject* go = matrix[(i - 1) / 2][(j - 1) / 2];
                     if (go != NULL) {
@@ -74,4 +81,18 @@ array<int, 2> Map::translatePosition(array<int, 2> pos) {
 GameObject* Map::get(array<int, 2> pos) {
     array<int, 2> new_pos = translatePosition(pos);
     return matrix[new_pos[0]][new_pos[1]];
+}
+
+// adds gameObject to random position in map
+bool Map::add(GameObject* go) {
+    bool has_place = false;
+    for (int tries = 0; tries < PLACEMENT_MAX_TRIES && !has_place; tries++) {
+        array<int, 2> pos = { Utils::randomRange(0,rows - 1), Utils::randomRange(0,cols - 1) };
+        if (matrix[pos[0]][pos[1]] == NULL) {
+            has_place = true;
+            matrix[pos[0]][pos[1]] = go;
+            go->pos = pos;
+        }
+    }
+    return has_place;
 }

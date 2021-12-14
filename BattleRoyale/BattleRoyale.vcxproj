@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClInclude Include="BattleRoyale.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Consumable.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Soldier.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HealthPotion.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Soldier.cpp" />
