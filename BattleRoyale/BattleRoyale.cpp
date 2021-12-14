@@ -1,7 +1,10 @@
 #include "BattleRoyale.h"
 #include "Utils.h"
+#include "Player.h"
+#include "Map.h"
 #include <chrono>
 #include <thread>
+#include "Consumable.h"
 
 using namespace std;
 using namespace chrono_literals; // ns, us, ms, s, h, etc.
@@ -15,6 +18,54 @@ BattleRoyale* BattleRoyale::instance = NULL;
 BattleRoyale::BattleRoyale(ViewMode viewMode) {
     this->viewMode = viewMode;
     refreshRate = this->viewMode == ViewMode::Cinematic ? 1000ms : 3000ms;
+}
+
+void BattleRoyale::launchMenu() {
+    cout << "Hi, welcome to Age Of Imperiums!" << endl << endl;
+    cout << "Watch the action with Debug (d) or Cinematic (c) mode?" << endl;
+
+    string viewMode;
+    cin >> viewMode;
+
+    BattleRoyale* game = BattleRoyale::create(viewMode == "c" ?
+        ViewMode::Cinematic : ViewMode::Debug);
+
+    cout << endl << "Let's define the map's size." << endl;
+    cout << endl << "How many rows?" << endl;
+    int rows;
+    cin >> rows;
+
+    cout << endl << "How many columns?" << endl;
+    int cols;
+    cin >> cols;
+
+    Map* map = new Map(rows, cols);
+    game->setMap(map);
+
+    cout << endl << "Enter the number of players:" << endl;
+
+    int nPlayers;
+    cin >> nPlayers;
+
+    for (int i = 0; i < nPlayers; i++) {
+        cout << endl << "Enter the army size of P" << i + 1 << endl;
+        int armySize;
+        cin >> armySize;
+        Player* p = new Player(armySize);
+        game->addPlayer(p);
+    }
+
+    cout << endl << "Lastly, I'm throwing some health potions on the map. How many?" << endl;
+
+    int n_potions;
+    cin >> n_potions;
+
+    for (int i = 0; i < n_potions; i++)
+        map->add(new HealthPotion(map, { -1,-1 }));
+
+    cout << "Done! Starting game...";
+    sleep_for(1000ms);
+    game->play();
 }
 
 BattleRoyale* BattleRoyale::create(ViewMode viewMode) {
@@ -66,15 +117,16 @@ void BattleRoyale::play() {
     // Game loop
     Player* loser = NULL;
     while (!loser) {
-        
+        if (viewMode == ViewMode::Cinematic) system("cls");
         for (auto& pl : players)
             if (pl->armySize == 0)
                 loser = pl;
 
         update();
         sleep_for(refreshRate);
-        if (viewMode == ViewMode::Cinematic) system("cls");
     }
+
+    // TODO show winner message
 }
 
 void BattleRoyale::destroy() {

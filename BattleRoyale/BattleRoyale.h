@@ -3,13 +3,14 @@
 #include <string>
 #include <vector>
 #include <chrono>
-#include "Player.h"
-#include "Map.h"
 
 using namespace std;
 using namespace chrono;
 
 enum class ViewMode { Cinematic, Debug };
+
+class Player;
+class Map;
 
 class BattleRoyale {
     static BattleRoyale* instance;
@@ -22,7 +23,8 @@ class BattleRoyale {
 public:
     int nPlayers;
     ViewMode viewMode;
-
+    
+    static void launchMenu();
     static BattleRoyale* create(ViewMode viewMode);
     static BattleRoyale* getInstance();
     

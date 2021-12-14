@@ -20,9 +20,6 @@ Map::Map(int m, int n) {
             matrix[i][j] = NULL;
         }
     }
-
-    // add potion randomly
-    this->add(new HealthPotion(this, {-1,-1}));
 }
 
 void Map::destroy() {
@@ -55,7 +52,7 @@ void Map::print(bool grid) {
                     if (go != NULL) {
                         SetConsoleTextAttribute(hConsole, go->color);
                         cout << " " << go->icon << " ";
-                        SetConsoleTextAttribute(hConsole, LOG_COLOR_WHITE);
+                        SetConsoleTextAttribute(hConsole, WHITE);
                     }
                     else cout << "   ";
                 }

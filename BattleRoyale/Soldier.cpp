@@ -36,8 +36,13 @@ void Soldier::move(array<int, 2> dir) {
     // If object in new position is a soldier...
     else if (Soldier* s = dynamic_cast<Soldier*> (go)) {
         // to avoid collisions
-        if (!isEnemy(s)) move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
-        return;
+        if (isEnemy(s) && !s->dead) {
+            return;
+        }
+        else if (!isEnemy(s)) {
+            move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
+            return;
+        }
     }
     
     // actual movement
@@ -50,7 +55,7 @@ void Soldier::move(array<int, 2> dir) {
 
 void Soldier::move() {
     GameObject* target = NULL; // = getNearestEnemy();
-    if (health < 30) target = getNearestPotion();
+    if (health <= 30) target = getNearestPotion();
     if (!target) target = getNearestEnemy();
 
     bool pickRandomly = false;
@@ -93,7 +98,7 @@ vector<Soldier*> Soldier::getEnemiesAround() {
     vector<Soldier*> soldiers;
     for (auto d : GameObject::DIRECTIONS) {
         Soldier* s = dynamic_cast<Soldier*> (map->get({ pos[0] + d[0], pos[1] + d[1] }));
-        if (isEnemy(s)) soldiers.push_back(s);
+        if (isEnemy(s) && !s->dead) soldiers.push_back(s);
     }
     return soldiers;
 }
@@ -107,7 +112,8 @@ void Soldier::receiveAttack(int receivedDamage) {
     if (health <= 0) {
         dead = true;
         player->armySize--;
-        color = 13;
+        icon = string(1, char(197));
+        color = 6;
 
         if (player->debug) cout << this->str() << " dies :(" << endl;
     }
@@ -123,7 +129,7 @@ Soldier* Soldier::getNearestEnemy() {
     for (int i = pos[0] - sightRange; i <= pos[0] + sightRange; i++) {
         for (int j = pos[1] - sightRange; j <= pos[1] + sightRange; j++) {
             Soldier* s = dynamic_cast<Soldier*> (map->get({ i,j }));
-            if (isEnemy(s)) {
+            if (isEnemy(s) && !s->dead) {
                 int distance = abs(s->pos[0] - pos[0]) + abs(s->pos[1] - pos[1]);
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -156,5 +162,5 @@ HealthPotion* Soldier::getNearestPotion() {
 }
 
 bool Soldier::isEnemy(Soldier* s) {
-    return s && s != this && s->player != this->player && !s->dead;
+    return s && s != this && s->player != this->player;
 }

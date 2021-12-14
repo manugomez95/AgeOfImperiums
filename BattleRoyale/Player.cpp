@@ -1,6 +1,7 @@
-#include "Player.h"
 #include "BattleRoyale.h"
 #include "Utils.h"
+#include "Player.h"
+#include "Map.h"
 
 using namespace std;
 
@@ -34,5 +35,5 @@ Player::Player(int armySize, bool debug) {
 Player::Player(int armySize) : Player(armySize, false) {}
 
 string Player::str() {
-    return "P" + to_string(id);
+    return "P" + to_string(id+1);
 }
