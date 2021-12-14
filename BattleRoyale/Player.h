@@ -11,10 +11,12 @@ class Player {
     static int counter;
 public:
     int id;
-    vector<Soldier> army;
+    vector<Soldier*> army;
     int armySize;
     int color;
+    bool debug;
 
-    Player(int);
+    Player(int armySize, bool debug);
+    Player(int armySize);
     string str();
 };

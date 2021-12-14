@@ -10,16 +10,20 @@ class Player;
 
 class Soldier : public GameObject {
 private:
-    //vector<Soldier*> getEnemiesAround();
+    vector<Soldier*> getEnemiesAround();
 
 public:
     Soldier(Player* player, Map* map, array<int, 2> pos);
 
     Player* player;
+    string name;
     int health;
-    int attack;
-    int defense;
+    int damage;
+    float dodgeChance;
     int velocity;
+    bool dead;
 
-    void action();
+    void combat();
+    void receiveAttack(int receivedDamage);
+    string str() override;
 };

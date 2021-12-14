@@ -1,6 +1,12 @@
 #include "BattleRoyale.h"
+#include "Utils.h"
+#include <chrono>
+#include <thread>
 
 using namespace std;
+using namespace chrono_literals; // ns, us, ms, s, h, etc.
+using chrono::system_clock;
+using namespace this_thread;
 
 // TODO make some variables private
 
@@ -26,21 +32,39 @@ Map* BattleRoyale::getMap() {
     return map;
 }
 
-void BattleRoyale::initPlayers(int n) {
-    for (int i = 0; i < n; i++) {
-        Player p = Player(10);
+void BattleRoyale::initPlayers(int n_players, int army_size) {
+    for (int i = 0; i < n_players; i++) {
+        Player* p = new Player(army_size);
         players.push_back(p); // TODO, allow customization
     }
 }
 
 void BattleRoyale::update() {
-    for (auto& pl : players) {
-        for (Soldier& s : pl.army) {
-            s.action();
-        }
-    }
+    for (auto& pl : players)
+        for (Soldier*& s : pl->army)
+            if (!s->dead) s->move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
 
     map->print(true);
+
+    for (auto& pl : players)
+        for (Soldier*& s : pl->army)
+            if (!s->dead) s->combat();
+
+}
+
+void BattleRoyale::play() {
+    // Game loop
+    Player* loser = NULL;
+    while (!loser) {
+        
+        for (auto& pl : players)
+            if (pl->armySize == 0)
+                loser = pl;
+
+        update();
+        sleep_for(3000ms); // 1000
+        //system("cls");
+    }
 }
 
 void BattleRoyale::destroy() {

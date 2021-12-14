@@ -47,7 +47,7 @@ void Map::print(bool grid) {
                     GameObject* go = matrix[(i - 1) / 2][(j - 1) / 2];
                     if (go != NULL) {
                         SetConsoleTextAttribute(hConsole, go->color);
-                        cout << " " << go->str() << " ";
+                        cout << " " << go->icon << " ";
                         SetConsoleTextAttribute(hConsole, LOG_COLOR_WHITE);
                     }
                     else cout << "   ";
@@ -71,7 +71,7 @@ array<int, 2> Map::translatePosition(array<int, 2> pos) {
     return new_pos;
 }
 
-// TODO function get that returns something that can be on the map
-
-// add function to get elements from the map given a position
-// so it automatically translatesPosition
+GameObject* Map::get(array<int, 2> pos) {
+    array<int, 2> new_pos = translatePosition(pos);
+    return matrix[new_pos[0]][new_pos[1]];
+}

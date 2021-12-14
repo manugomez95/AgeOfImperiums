@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include "Player.h"
@@ -12,13 +11,14 @@ class BattleRoyale {
     static BattleRoyale* instance;
 public:
     int nPlayers;
-    vector<Player> players;
+    vector<Player*> players;
 
     static BattleRoyale* create();
     static BattleRoyale* getInstance();
     void setMap(Map* map);
     Map* getMap();
-    void initPlayers(int);
+    void initPlayers(int n_players, int army_size);
     void destroy();
     void update();
+    void play();
 };

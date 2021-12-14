@@ -8,6 +8,7 @@ using namespace std;
 class Map;
 
 // Represents anything that can be placed in the map
+// TODO make abstract
 class GameObject {
 public:
 	static const array<array<int, 2>, 4> DIRECTIONS;
@@ -17,8 +18,8 @@ public:
 	Map* map;
 	array<int,2> pos;
 	int color;
-	char icon;
+	string icon;
 
-	string str();
-	void move(array<int, 2>);
+	virtual string str();
+	virtual void move(array<int, 2>);
 };

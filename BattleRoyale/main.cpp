@@ -1,20 +1,24 @@
 #include "BattleRoyale.h"
-#include <chrono>
-#include <thread>
 
 using namespace std;
-using namespace this_thread;
-using namespace chrono_literals; // ns, us, ms, s, h, etc.
-using chrono::system_clock;
+
+BattleRoyale* soldierDemo() {
+    BattleRoyale* game = BattleRoyale::create();
+
+    // Map
+    game->setMap(new Map(7, 7));
+
+    // Create players
+    Player* p1 = new Player(1, true); // debug logging true
+    game->players.push_back(p1);
+
+    Player* p2 = new Player(10, true);
+    game->players.push_back(p2);
+    
+    return game;
+}
 
 int main()
-{
-    BattleRoyale* game = BattleRoyale::create();
-    game->setMap(new Map(25, 50));
-    game->initPlayers(2);
-    while (true) {
-        game->update();
-        sleep_for(1000ms);
-        system("cls");
-    }
+{    
+    soldierDemo()->play();
 }
