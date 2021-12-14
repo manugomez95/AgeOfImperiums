@@ -21,5 +21,4 @@ public:
 	string icon;
 
 	virtual string str();
-	virtual void move(array<int, 2>);
 };

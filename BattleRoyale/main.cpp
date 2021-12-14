@@ -6,10 +6,10 @@ BattleRoyale* soldierDemo() {
     BattleRoyale* game = BattleRoyale::create();
 
     // Map
-    game->setMap(new Map(7, 7));
+    game->setMap(new Map(10, 10));
 
     // Create players
-    Player* p1 = new Player(1, true); // debug logging true
+    Player* p1 = new Player(7, true); // debug logging true
     game->players.push_back(p1);
 
     Player* p2 = new Player(10, true);

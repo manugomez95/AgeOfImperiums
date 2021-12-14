@@ -11,6 +11,9 @@ class Player;
 class Soldier : public GameObject {
 private:
     vector<Soldier*> getEnemiesAround();
+    Soldier* getNearestEnemy();
+    bool isEnemy(Soldier* s);
+    void receiveAttack(int receivedDamage);
 
 public:
     Soldier(Player* player, Map* map, array<int, 2> pos);
@@ -24,6 +27,7 @@ public:
     bool dead;
 
     void combat();
-    void receiveAttack(int receivedDamage);
+    void move(array<int, 2> dir);
+    void move();
     string str() override;
 };

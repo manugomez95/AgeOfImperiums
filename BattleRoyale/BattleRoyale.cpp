@@ -35,21 +35,20 @@ Map* BattleRoyale::getMap() {
 void BattleRoyale::initPlayers(int n_players, int army_size) {
     for (int i = 0; i < n_players; i++) {
         Player* p = new Player(army_size);
-        players.push_back(p); // TODO, allow customization
+        players.push_back(p);
     }
 }
 
 void BattleRoyale::update() {
     for (auto& pl : players)
         for (Soldier*& s : pl->army)
-            if (!s->dead) s->move(GameObject::DIRECTIONS[Utils::randomRange(0, 3)]);
+            if (!s->dead) s->move();
 
     map->print(true);
 
     for (auto& pl : players)
         for (Soldier*& s : pl->army)
             if (!s->dead) s->combat();
-
 }
 
 void BattleRoyale::play() {
