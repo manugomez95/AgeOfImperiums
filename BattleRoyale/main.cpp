@@ -11,8 +11,9 @@ BattleRoyale* demo() {
     for (int i = 0; i < n_potions; i++)
         new HealthPotion(map);
     BattleRoyale* game = new BattleRoyale(map, ViewMode::Debug);
-    game->addPlayer(3); // change this so I only define size
-    game->addPlayer(10);
+    game->addPlayer(1); // change this so I only define size
+    game->addPlayer(12);
+    game->addPlayer(2);
     return game;
 }
 

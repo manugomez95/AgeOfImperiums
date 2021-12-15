@@ -14,7 +14,7 @@ int const PLACEMENT_MAX_TRIES = 10;
 Map::Map(int m, int n) {
     rows = m;
     cols = n;
-    matrix = new GameObject **[rows];
+    matrix = new GameObject** [rows];
     for (int i = 0; i < rows; ++i) {
         matrix[i] = new GameObject * [cols];
         for (int j = 0; j < cols; ++j) {

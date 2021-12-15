@@ -12,6 +12,7 @@ class Player {
     static int counter;
 
 private:
+    bool eliminated;
     unsigned int id;
     int armySize;
     vector<Soldier*> army;
@@ -27,5 +28,8 @@ public:
     int getArmySize();
     void decreaseArmySize();
     int getColor();
+    bool getEliminated();
+    void setEliminated(bool eliminated);
     bool isDebugged();
+    void destroy();
 };

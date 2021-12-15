@@ -24,8 +24,9 @@ private:
 
     Map* map;
     vector<Player*> players;
-    
+
     void update();
+    void printBegginingText();
 public:
     BattleRoyale(Map* map, ViewMode viewMode);
     static void launchMenu();

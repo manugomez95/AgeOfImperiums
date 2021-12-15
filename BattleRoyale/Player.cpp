@@ -10,10 +10,10 @@ using namespace std;
 int Player::counter = 0;
 
 // TODO add deletes everywhere to clean memory
-// TODO use global counter to check how many players remaining in match
 Player::Player(Map* map, int armySize, bool debug) {
     array<int, 4> colors = { LIGHTGREEN, YELLOW, LIGHTBLUE, LIGHTGRAY };
     
+    this->eliminated = false;
     this->id = counter;
     counter++;
     
@@ -55,4 +55,17 @@ int Player::getColor() {
 
 bool Player::isDebugged() {
     return debug;
+}
+
+bool Player::getEliminated() {
+    return eliminated;
+}
+
+void Player::setEliminated(bool eliminated) {
+    this->eliminated = eliminated;
+}
+
+void Player::destroy() {
+    for (int i = 0; i < army.size(); i++)
+        delete army[i];
 }

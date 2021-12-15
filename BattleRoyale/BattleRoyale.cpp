@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <windows.h> // WinApi header
 
 #include "BattleRoyale.h"
 #include "Utils.h"
@@ -73,38 +74,68 @@ void BattleRoyale::addPlayer(int armySize) {
 }
 
 void BattleRoyale::update() {
+    // Movement turn
     for (auto& pl : players)
         for (Soldier*& s : pl->getArmy())
             if (!s->isDead()) s->move();
 
+    // Print map
     map->print(viewMode == ViewMode::Debug);
 
+    // Combat turn
     for (auto& pl : players)
         for (Soldier*& s : pl->getArmy())
             if (!s->isDead()) s->combat();
 }
 
 void BattleRoyale::play() {
+    printBegginingText();
+
+    int remainingPlayers = players.size();
+
     // Game loop
-    Player* loser = NULL;
-    while (!loser) {
+    while (remainingPlayers> 1) {
         if (viewMode == ViewMode::Minimalist) system("cls");
-        for (auto& pl : players)
-            if (pl->getArmySize() == 0)
-                loser = pl;
+
+        // Remove if armySize == 0
+        for (auto& pl : players) {
+            if (!pl->getEliminated() && !pl->getArmySize()) {
+                pl->setEliminated(true);
+                remainingPlayers--;
+            }
+        }
 
         update();
         sleep_for(refreshRate);
     }
 
-    // TODO show winner message
+    Player* winner = NULL;
+    for (auto& pl : players)
+        if (!pl->getEliminated()) winner = pl;
+    cout << endl << "The winner is " << winner->str() << "!!" << endl << endl;
+    destroy();
+}
+
+void BattleRoyale::printBegginingText() {
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    for (unsigned int i = 0; i < players.size(); i++) {
+        SetConsoleTextAttribute(hConsole, players[i]->getColor());
+        cout << players[i]->str();
+        SetConsoleTextAttribute(hConsole, WHITE);
+        if (i < players.size() - 1) cout << " vs ";
+    }
+    cout << endl << endl;
 }
 
 Map* BattleRoyale::getMap() {
     return map;
 }
 
-// TODO finish
 void BattleRoyale::destroy() {
     map->destroy();
+    for (auto& pl : players)
+        pl->destroy();
+    delete this;
 }

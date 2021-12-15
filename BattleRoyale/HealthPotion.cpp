@@ -14,4 +14,5 @@ HealthPotion::HealthPotion(Map* map) : Consumable(map) {
 void HealthPotion::consume(Soldier* consumer) {
 	if (consumer->getPlayer()->isDebugged()) cout << consumer->str() << " drinked " << this->name << ". +" << effect << "HP!" << endl;
 	consumer->setHealth(consumer->getHealth() + effect);
+	delete this;
 }
