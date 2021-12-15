@@ -7,38 +7,33 @@
 using namespace std;
 using namespace chrono;
 
-enum class ViewMode { Cinematic, Debug };
+// Define the way the game looks on console
+enum class ViewMode {   
+    Minimalist,         // Minimal representation of the map and faster refresh rate
+    Debug               // Grid representation of the map and logging
+};
 
 class Player;
 class Map;
 
+// Represents the entire simulation/game
 class BattleRoyale {
-    static BattleRoyale* instance;
+private:
     duration<long long, milli> refreshRate;
+    ViewMode viewMode;
 
     Map* map;
     vector<Player*> players;
     
-    BattleRoyale(ViewMode viewMode);
+    void update();
 public:
-    int nPlayers;
-    ViewMode viewMode;
-    
+    BattleRoyale(Map* map, ViewMode viewMode);
     static void launchMenu();
-    static BattleRoyale* create(ViewMode viewMode);
-    static BattleRoyale* getInstance();
     
-    void addPlayer(Player* player);
-    void initPlayers(int n_players, int army_size);
+    void addPlayer(int armySize);
+    void play();
 
-
-    void setMap(Map* map);
     Map* getMap();
-    
 
     void destroy();
-    
-    
-    void update();
-    void play();
 };

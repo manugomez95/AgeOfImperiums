@@ -1,22 +1,31 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <vector>
-#include "Soldier.h"
 
 using namespace std;
 
+class Soldier;
+class Map;
+
 class Player {
     static int counter;
-public:
-    int id;
-    vector<Soldier*> army;
+
+private:
+    unsigned int id;
     int armySize;
+    vector<Soldier*> army;
+    Map* map;
     int color;
     bool debug;
 
-    Player(int armySize, bool debug);
-    Player(int armySize);
+public:
+    Player(Map* map, int armySize, bool debug);
     string str();
+
+    vector<Soldier*> getArmy();
+    int getArmySize();
+    void decreaseArmySize();
+    int getColor();
+    bool isDebugged();
 };

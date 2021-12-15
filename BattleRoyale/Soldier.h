@@ -11,15 +11,6 @@ class HealthPotion;
 
 class Soldier : public GameObject {
 private:
-    vector<Soldier*> getEnemiesAround();
-    Soldier* getNearestEnemy();
-    HealthPotion* getNearestPotion();
-    bool isEnemy(Soldier* s);
-    void receiveAttack(int receivedDamage);
-
-public:
-    Soldier(Player* player, Map* map, array<int, 2> pos);
-
     Player* player;
     string name;
     int health;
@@ -29,8 +20,21 @@ public:
     int sightRange = 3;
     bool dead;
 
-    void combat();
+    vector<Soldier*> getEnemiesAround();
+    Soldier* getNearestEnemy();
+    HealthPotion* getNearestPotion();
+    bool isEnemy(Soldier* s);
+    void receiveAttack(int receivedDamage);
     void move(array<int, 2> dir);
+
+public:
+    Soldier(Player* player, Map* map);
+
+    void combat();
     void move();
     string str() override;
+    int getHealth();
+    void setHealth(int health);
+    Player* getPlayer();
+    bool isDead();
 };

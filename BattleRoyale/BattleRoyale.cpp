@@ -1,125 +1,96 @@
+#include <chrono>
+#include <thread>
+#include <iostream>
+
 #include "BattleRoyale.h"
 #include "Utils.h"
 #include "Player.h"
 #include "Map.h"
-#include <chrono>
-#include <thread>
 #include "Consumable.h"
+#include "Soldier.h"
 
 using namespace std;
 using namespace chrono_literals; // ns, us, ms, s, h, etc.
 using chrono::system_clock;
 using namespace this_thread;
 
-// TODO make some variables private
-
-BattleRoyale* BattleRoyale::instance = NULL;
-
-BattleRoyale::BattleRoyale(ViewMode viewMode) {
+BattleRoyale::BattleRoyale(Map* map, ViewMode viewMode) {
     this->viewMode = viewMode;
-    refreshRate = this->viewMode == ViewMode::Cinematic ? 1000ms : 3000ms;
+    this->map = map;
+    refreshRate = this->viewMode == ViewMode::Minimalist ? 1000ms : 3000ms;
 }
 
 void BattleRoyale::launchMenu() {
     cout << "Hi, welcome to Age Of Imperiums!" << endl << endl;
-    cout << "Watch the action with Debug (d) or Cinematic (c) mode?" << endl;
+    cout << "This application simulates a battle between N players, each with an army." << endl << endl;
+    cout << "You can watch the action on Debug (d) or Minimalist (m) mode. Please choose one:" << endl;
 
     string viewMode;
     cin >> viewMode;
 
-    BattleRoyale* game = BattleRoyale::create(viewMode == "c" ?
-        ViewMode::Cinematic : ViewMode::Debug);
-
-    cout << endl << "Let's define the map's size." << endl;
-    cout << endl << "How many rows?" << endl;
+    cout << endl << "Great. Let's define the size of the map (as a grid):" << endl;
+    cout << endl << "Enter rows:" << endl;
     int rows;
     cin >> rows;
 
-    cout << endl << "How many columns?" << endl;
+    cout << endl << "Enter columns:" << endl;
     int cols;
     cin >> cols;
 
     Map* map = new Map(rows, cols);
-    game->setMap(map);
 
-    cout << endl << "Enter the number of players:" << endl;
+    BattleRoyale* game = new BattleRoyale(map, viewMode == "m" ?
+        ViewMode::Minimalist : ViewMode::Debug);
+
+    cout << endl << "Now, how many players?" << endl;
 
     int nPlayers;
     cin >> nPlayers;
 
     for (int i = 0; i < nPlayers; i++) {
-        cout << endl << "Enter the army size of P" << i + 1 << endl;
+        cout << endl << "- Army size of P" << i + 1 << endl;
         int armySize;
         cin >> armySize;
-        Player* p = new Player(armySize);
-        game->addPlayer(p);
+        game->addPlayer(armySize);
     }
 
-    cout << endl << "Lastly, I'm throwing some health potions on the map. How many?" << endl;
+    cout << endl << "Lastly, let's throw some health potions on the map. How many?" << endl;
 
     int n_potions;
     cin >> n_potions;
 
     for (int i = 0; i < n_potions; i++)
-        map->add(new HealthPotion(map, { -1,-1 }));
+        new HealthPotion(map);
 
-    cout << "Done! Starting game...";
+    cout << endl << "Done! Starting game..." << endl;
     sleep_for(1000ms);
     game->play();
 }
 
-BattleRoyale* BattleRoyale::create(ViewMode viewMode) {
-    if (instance != NULL) {
-        return instance;
-    }
-    instance = new BattleRoyale(viewMode);
-    return instance;
-}
-
-BattleRoyale* BattleRoyale::getInstance() {
-    return instance;
-}
-
-void BattleRoyale::setMap(Map* map) {
-    this->map = map;
-}
-
-Map* BattleRoyale::getMap() {
-    return map;
-}
-
-// TODO deprecated? revisar
-void BattleRoyale::initPlayers(int n_players, int army_size) {
-    for (int i = 0; i < n_players; i++) {
-        Player* p = new Player(army_size);
-        players.push_back(p);
-    }
-}
-
-void BattleRoyale::addPlayer(Player* player) {
-    player->debug = this->viewMode == ViewMode::Debug;
+void BattleRoyale::addPlayer(int armySize) {
+    Player* player = new Player(map, armySize, this->viewMode == ViewMode::Debug);
     players.push_back(player);
 }
 
 void BattleRoyale::update() {
     for (auto& pl : players)
-        for (Soldier*& s : pl->army)
-            if (!s->dead) s->move();
+        for (Soldier*& s : pl->getArmy())
+            if (!s->isDead()) s->move();
 
     map->print(viewMode == ViewMode::Debug);
 
     for (auto& pl : players)
-        for (Soldier*& s : pl->army)
-            if (!s->dead) s->combat();
+        for (Soldier*& s : pl->getArmy())
+            if (!s->isDead()) s->combat();
 }
 
 void BattleRoyale::play() {
     // Game loop
     Player* loser = NULL;
     while (!loser) {
-        if (viewMode == ViewMode::Cinematic) system("cls");
+        if (viewMode == ViewMode::Minimalist) system("cls");
         for (auto& pl : players)
-            if (pl->armySize == 0)
+            if (pl->getArmySize() == 0)
                 loser = pl;
 
         update();
@@ -129,6 +100,11 @@ void BattleRoyale::play() {
     // TODO show winner message
 }
 
+Map* BattleRoyale::getMap() {
+    return map;
+}
+
+// TODO finish
 void BattleRoyale::destroy() {
     map->destroy();
 }

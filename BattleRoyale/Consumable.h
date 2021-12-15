@@ -7,14 +7,14 @@ class Soldier;
 
 class Consumable : public GameObject {
 public:
-    Consumable(Map* map, array<int, 2> pos) : GameObject(map, pos) {};
+    Consumable(Map* map) : GameObject(map) {};
     virtual void consume(Soldier* consumer) = 0;
 };
 
 class HealthPotion : public Consumable {
-public:
-    HealthPotion(Map* map, array<int, 2> pos);
+private:
     int effect = +10;
-
+public:
+    HealthPotion(Map* map);
     void consume(Soldier* consumer) override;
 };

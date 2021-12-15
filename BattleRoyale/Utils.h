@@ -1,7 +1,7 @@
 #pragma once
 
-#include <random>
 #include <string>
+#include <array>
 
 #define BLACK			0
 #define BLUE			1
@@ -24,6 +24,7 @@ using namespace std;
 
 class Utils {
 public:
-	static const string SILLY_NAMES[59];
+	static const array<array<int, 2>, 4> DIRECTIONS;
+	static const string SILLY_NAMES[120];
 	static int randomRange(int, int);
 };

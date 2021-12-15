@@ -2,14 +2,15 @@
 #include "BattleRoyale.h"
 #include "GameObject.h"
 #include "Utils.h"
-#include <windows.h> // WinApi header
 #include "Consumable.h"
+#include <iostream>
+#include <windows.h> // WinApi header
 
 using namespace std;
 
 int const PLACEMENT_MAX_TRIES = 10;
 
-// In this map when a unit reaches the limit, it continues on the contrary side
+// In this map when a unit reaches the limit, it continues on the other side
 Map::Map(int m, int n) {
     rows = m;
     cols = n;
@@ -50,8 +51,8 @@ void Map::print(bool grid) {
                 else {
                     GameObject* go = matrix[(i - 1) / 2][(j - 1) / 2];
                     if (go != NULL) {
-                        SetConsoleTextAttribute(hConsole, go->color);
-                        cout << " " << go->icon << " ";
+                        SetConsoleTextAttribute(hConsole, go->getColor());
+                        cout << " " << go->getIcon() << " ";
                         SetConsoleTextAttribute(hConsole, WHITE);
                     }
                     else cout << "   ";
@@ -80,16 +81,21 @@ GameObject* Map::get(array<int, 2> pos) {
     return matrix[new_pos[0]][new_pos[1]];
 }
 
-// adds gameObject to random position in map
-bool Map::add(GameObject* go) {
+array<int,2> Map::add(GameObject* go) {
+    array<int, 2> pos;
     bool has_place = false;
     for (int tries = 0; tries < PLACEMENT_MAX_TRIES && !has_place; tries++) {
-        array<int, 2> pos = { Utils::randomRange(0,rows - 1), Utils::randomRange(0,cols - 1) };
+        pos = { Utils::randomRange(0,rows - 1), Utils::randomRange(0,cols - 1) };
         if (matrix[pos[0]][pos[1]] == NULL) {
             has_place = true;
             matrix[pos[0]][pos[1]] = go;
-            go->pos = pos;
+            go->setPosition(pos);
         }
     }
-    return has_place;
+    if (!has_place) throw runtime_error("GameObject collision. Map is too crowded.");
+    return pos;
+}
+
+void Map::setPos(array<int, 2> pos, GameObject* go) {
+    matrix[pos[0]][pos[1]] = go;
 }

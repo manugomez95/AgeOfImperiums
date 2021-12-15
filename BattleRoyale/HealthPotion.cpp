@@ -2,16 +2,16 @@
 #include "Soldier.h"
 #include <iostream>
 #include "Player.h"
+#include "Utils.h"
 using namespace std;
 
-HealthPotion::HealthPotion(Map* map, array<int, 2> pos) : Consumable(map, pos) {
+HealthPotion::HealthPotion(Map* map) : Consumable(map) {
 	name = "health potion";
 	icon = string(1, char(3));
-	color = 13;
+	color = LIGHTRED;
 }
 
 void HealthPotion::consume(Soldier* consumer) {
-	int oldHealth = consumer->health;
-	consumer->health += effect;
-	if (consumer->player->debug) cout << consumer->str() << " drinked " << this->name << ". Health goes from " << oldHealth << " to " << consumer->health;
+	if (consumer->getPlayer()->isDebugged()) cout << consumer->str() << " drinked " << this->name << ". +" << effect << "HP!" << endl;
+	consumer->setHealth(consumer->getHealth() + effect);
 }
